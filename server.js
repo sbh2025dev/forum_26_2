@@ -6,5 +6,5 @@ app.listen(8080, () => {
 });
 
 app.get("/", (request, response) => {
-  response.send("hello world");
+  response.send("hello kucc");
 });
