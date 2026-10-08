@@ -20,14 +20,27 @@
       <h1>Small moments, shared.</h1>
       <div class="layout">
         <section aria-label="Post feed">
-          <p id="status" role="status" aria-live="polite"></p>
-          <div id="posts"></div>
+          <p id="status" role="status" aria-live="polite"><%= error %></p>
+          <div id="posts">
+            <% posts.forEach((post) => { %>
+              <article class="post">
+                <header class="post-header">
+                  <strong>@<%= post.author %></strong>
+                  <time datetime="<%= post.createdAt %>"><%= new Date(post.createdAt).toLocaleDateString() %></time>
+                </header>
+                <% if (post.image) { %>
+                  <img class="post-image" src="<%= post.image %>" alt="<%= post.imageAlt %>" />
+                <% } %>
+                <div class="post-body"><p class="post-caption"><%= post.text %></p></div>
+              </article>
+            <% }); %>
+          </div>
         </section>
         <aside>
           <section class="panel">
             <h2>Your next story</h2>
             <p>A photo, a thought, a little piece of your day.</p>
-            <form id="post-form">
+            <form id="post-form" action="/posts" method="post">
               <label for="post-text">Your post</label>
               <textarea
                 id="post-text"
@@ -35,7 +48,7 @@
                 rows="4"
                 maxlength="1000"
                 required
-              ></textarea>
+              ><%= text %></textarea>
               <p class="muted">
                 Posting as @ava. Posts reset when the server restarts.
               </p>
@@ -45,6 +58,5 @@
         </aside>
       </div>
     </main>
-    <script src="/posts.js"></script>
   </body>
 </html>

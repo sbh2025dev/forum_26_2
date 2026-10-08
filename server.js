@@ -1,8 +1,12 @@
 const express = require('express');
+const path = require('path');
 
 const app = express();
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Keep posts in memory for this lecture. Restarting the server resets them.
 const posts = [
@@ -27,7 +31,21 @@ app.post('/api/posts', (req, res) => {
 });
 
 app.get(['/', '/index.html'], (req, res) => {
-  res.sendFile('index.html', { root: '.' });
+  res.render('index', { posts, error: '', text: '' });
+});
+
+app.post('/posts', (req, res) => {
+  const text = req.body?.text;
+  if (typeof text !== 'string' || !text.trim() || text.trim().length > 1000) {
+    return res.status(400).render('index', {
+      posts,
+      error: 'Write a post between 1 and 1000 characters.',
+      text: typeof text === 'string' ? text : '',
+    });
+  }
+
+  posts.unshift({ id: nextId++, author: 'ava', text: text.trim(), createdAt: new Date().toISOString() });
+  res.redirect(303, '/');
 });
 
 app.get('/profile.html', (req, res) => {
@@ -36,10 +54,6 @@ app.get('/profile.html', (req, res) => {
 
 app.get('/styles.css', (req, res) => {
   res.sendFile('styles.css', { root: '.' });
-});
-
-app.get('/posts.js', (req, res) => {
-  res.sendFile('posts.js', { root: '.' });
 });
 
 app.use('/assets', express.static('public/assets'));
