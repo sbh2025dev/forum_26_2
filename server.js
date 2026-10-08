@@ -15,25 +15,12 @@ const posts = [
 ];
 let nextId = 3;
 
-app.get('/api/posts', (req, res) => {
-  res.json(posts);
-});
-
-app.post('/api/posts', (req, res) => {
-  const text = req.body?.text;
-  if (typeof text !== 'string' || !text.trim() || text.trim().length > 1000) {
-    return res.status(400).json({ error: 'Write a post between 1 and 1000 characters.' });
-  }
-
-  const post = { id: nextId++, author: 'ava', text: text.trim(), createdAt: new Date().toISOString() };
-  posts.unshift(post);
-  res.status(201).json(post);
-});
-
+// GET / or /index.html: render the feed with EJS.
 app.get(['/', '/index.html'], (req, res) => {
   res.render('index', { posts, error: '', text: '' });
 });
 
+// POST /posts: accept the post form and redirect to the feed, or show a validation error.
 app.post('/posts', (req, res) => {
   const text = req.body?.text;
   if (typeof text !== 'string' || !text.trim() || text.trim().length > 1000) {
@@ -48,14 +35,17 @@ app.post('/posts', (req, res) => {
   res.redirect(303, '/');
 });
 
+// GET /profile.html: serve the profile page.
 app.get('/profile.html', (req, res) => {
   res.sendFile('profile.html', { root: '.' });
 });
 
+// GET /styles.css: serve the stylesheet.
 app.get('/styles.css', (req, res) => {
   res.sendFile('styles.css', { root: '.' });
 });
 
+// Serve images and other static files under /assets.
 app.use('/assets', express.static('public/assets'));
 
 app.listen(8080, () => {
