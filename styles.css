@@ -1,0 +1,256 @@
+:root {
+  color-scheme: light;
+  --ink: #172d29;
+  --muted: #62756e;
+  --paper: #f4f5ef;
+  --line: #dbe2d8;
+  --accent: #266b53;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font:
+    16px/1.55 system-ui,
+    sans-serif;
+}
+a {
+  color: var(--accent);
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button,
+.button {
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  padding: 0.55rem 0.9rem;
+  text-decoration: none;
+}
+button.secondary {
+  color: var(--accent);
+  background: white;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+:focus-visible {
+  outline: 3px solid #dd9819;
+  outline-offset: 3px;
+}
+input,
+textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid #a8b8ad;
+  border-radius: 8px;
+  padding: 0.65rem;
+  background: white;
+  color: var(--ink);
+}
+textarea {
+  resize: vertical;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin: 0.8rem 0 0.25rem;
+}
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+h2 {
+  font-size: 1.15rem;
+}
+small,
+.muted {
+  color: var(--muted);
+}
+.site-header {
+  background: white;
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  max-width: 1120px;
+  margin: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand {
+  font-size: 1.55rem;
+  letter-spacing: -0.06em;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand span {
+  color: var(--accent);
+}
+nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 2rem 1.25rem;
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 650px) minmax(260px, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.panel,
+.post {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+.post {
+  padding: 0;
+  overflow: hidden;
+}
+.post-header {
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.post-header button {
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-weight: 700;
+  padding: 0;
+}
+.post-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #e7ede3;
+}
+.post-body {
+  padding: 1.1rem 1.2rem;
+}
+.post-caption {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.actions button {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.stack {
+  display: grid;
+  gap: 0.5rem;
+}
+#status {
+  min-height: 1.5rem;
+  margin: 1rem 0;
+  overflow-wrap: anywhere;
+}
+#status.error {
+  color: #a42d25;
+}
+.chat-log {
+  height: 300px;
+  overflow-y: auto;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: var(--paper);
+  border-radius: 8px;
+}
+.message {
+  max-width: 90%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: white;
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.message.own {
+  margin-left: auto;
+  background: #dcebdd;
+}
+.message small {
+  display: block;
+  font-size: 0.7rem;
+}
+.profile-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dcebdd;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+[hidden] {
+  display: none !important;
+}
+footer {
+  max-width: 1120px;
+  margin: auto;
+  padding: 1.5rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  main {
+    padding-top: 1.25rem;
+  }
+  .header-inner {
+    flex-wrap: wrap;
+  }
+}

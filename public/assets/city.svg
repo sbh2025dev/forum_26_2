@@ -1,0 +1,21 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 800 600"
+  role="img"
+  aria-label="Illustrated city at sunset"
+>
+  <rect width="800" height="600" fill="#e4ddc9" />
+  <circle cx="590" cy="170" r="100" fill="#cc7955" />
+  <path d="M0 370 800 310V600H0" fill="#91a28a" />
+  <path d="M0 440 800 390V600H0" fill="#496b5d" />
+  <path
+    d="M80 380V130H240V380M290 350V230H430V350M500 340V280H700V340"
+    fill="#2c5148"
+  />
+  <g fill="#edd9a1">
+    <path
+      d="M105 160H135V190H105ZM175 160H205V190H175ZM105 220H135V250H105ZM175 220H205V250H175ZM105 280H135V310H105ZM175 280H205V310H175ZM315 260H345V290H315ZM375 260H405V290H375Z"
+    />
+  </g>
+  <path d="M380 600 480 380H535L540 600" fill="#dbc49b" />
+</svg>

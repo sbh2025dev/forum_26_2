@@ -1,0 +1,27 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 800 600"
+  role="img"
+  aria-label="Illustrated coffee on a table"
+>
+  <rect width="800" height="600" fill="#d8e0cd" />
+  <path d="M0 400 800 260V600H0" fill="#b8c9ab" />
+  <ellipse cx="400" cy="430" rx="230" ry="65" fill="#91a28a" />
+  <ellipse cx="380" cy="412" rx="195" ry="54" fill="#f3efde" />
+  <path
+    d="M535 260C700 220 710 405 540 380"
+    fill="none"
+    stroke="#f3efde"
+    stroke-width="32"
+  />
+  <path d="M235 250H535L510 405Q390 470 260 405Z" fill="#f3efde" />
+  <ellipse cx="385" cy="250" rx="150" ry="45" fill="#76523b" />
+  <ellipse cx="385" cy="250" rx="135" ry="35" fill="#423a2d" />
+  <path
+    d="M340 170Q300 130 345 80M415 180Q470 130 415 65"
+    fill="none"
+    stroke="#f3efde"
+    stroke-width="12"
+    stroke-linecap="round"
+  />
+</svg>
