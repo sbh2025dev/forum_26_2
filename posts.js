@@ -1,6 +1,5 @@
 const feed = document.querySelector('#posts');
 const status = document.querySelector('#status');
-const loadButton = document.querySelector('#load-posts');
 const form = document.querySelector('#post-form');
 const postText = document.querySelector('#post-text');
 const publishButton = form.querySelector('button');
@@ -31,19 +30,17 @@ function renderPost(post) {
 }
 
 async function loadPosts() {
-  loadButton.disabled = true;
   publishButton.disabled = true;
   showStatus('Loading posts…');
   try {
     const response = await fetch('/api/posts');
-    if (!response.ok) throw new Error('Could not load posts. Try again.');
+    if (!response.ok) throw new Error('Could not load posts. Refresh the page to try again.');
     const posts = await response.json();
     feed.replaceChildren(...posts.map(renderPost));
     showStatus(posts.length ? '' : 'No posts yet. Share the first one!');
   } catch (error) {
     showStatus(error.message, true);
   } finally {
-    loadButton.disabled = false;
     publishButton.disabled = false;
   }
 }
@@ -51,8 +48,6 @@ async function loadPosts() {
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   publishButton.disabled = true;
-  // Avoid a pending reload overwriting the newly published post.
-  loadButton.disabled = true;
   showStatus('Publishing…');
   try {
     const response = await fetch('/api/posts', {
@@ -69,9 +64,7 @@ form.addEventListener('submit', async (event) => {
     showStatus(error.message, true);
   } finally {
     publishButton.disabled = false;
-    loadButton.disabled = false;
   }
 });
 
-loadButton.addEventListener('click', loadPosts);
 loadPosts();
