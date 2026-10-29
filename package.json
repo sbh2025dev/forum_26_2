@@ -12,6 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "ejs": "^7.0.1",
-    "express": "^5.2.1"
-  }
+    "express": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbh2025dev/forum_26_2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sbh2025dev/forum_26_2/issues"
+  },
+  "homepage": "https://github.com/sbh2025dev/forum_26_2#readme"
 }
