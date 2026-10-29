@@ -31,7 +31,10 @@
                 <% if (post.image) { %>
                   <img class="post-image" src="<%= post.image %>" alt="<%= post.imageAlt %>" />
                 <% } %>
-                <div class="post-body"><p class="post-caption"><%= post.text %></p></div>
+                <div class="post-body">
+                  <p class="post-caption"><%= post.text %></p>
+                  <button type="button" class="secondary" onclick="deletePost(<%= post.id %>, this)">Delete post</button>
+                </div>
               </article>
             <% }); %>
           </div>
@@ -58,5 +61,19 @@
         </aside>
       </div>
     </main>
+    <script>
+      async function deletePost(id, button) {
+        try {
+          // Ask the server to delete the post.
+          const response = await fetch(`/posts/${id}/delete`, { method: "POST" });
+          if (!response.ok) throw new Error("Delete failed");
+
+          // Remove the post from the screen without reloading.
+          button.closest(".post").remove();
+        } catch (error) {
+          alert("Could not delete the post. Please try again.");
+        }
+      }
+    </script>
   </body>
 </html>

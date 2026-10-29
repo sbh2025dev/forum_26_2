@@ -54,6 +54,18 @@ app.post("/posts", (req, res) => {
   res.redirect(303, "/");
 });
 
+// Delete a post from memory. The browser updates the page itself.
+app.post("/posts/:id/delete", (req, res) => {
+  const index = posts.findIndex((post) => String(post.id) === req.params.id);
+  if (index === -1) {
+    return res.status(404).send("Post not found.");
+  }
+  // Remove the post from the array.
+  posts.splice(index, 1);
+  // Return 204 No Content to indicate success without a response body.
+  res.status(204).end();
+});
+
 // GET /profile.html: serve the profile page.
 app.get("/profile.html", (req, res) => {
   res.sendFile("profile.html", { root: "." });
