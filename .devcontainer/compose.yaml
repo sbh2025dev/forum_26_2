@@ -1,0 +1,12 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:22
+    command: sleep infinity
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+    depends_on:
+      mongodb:
+        condition: service_healthy

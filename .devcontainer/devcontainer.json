@@ -1,6 +1,10 @@
 {
   "name": "Node.js",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "dockerComposeFile": ["../compose.yaml", "compose.yaml"],
+  "service": "app",
+  "runServices": ["app", "mongodb", "mongo-express"],
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
@@ -16,7 +20,7 @@
       }
     }
   },
-  "forwardPorts": [3000],
-  "postCreateCommand": "npm init -y && npm install express && npm install -g nodemon",
+  "forwardPorts": [8080],
+  "postCreateCommand": "npm install",
   "remoteUser": "node"
 }

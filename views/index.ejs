@@ -33,7 +33,7 @@
                 <% } %>
                 <div class="post-body">
                   <p class="post-caption"><%= post.text %></p>
-                  <button type="button" class="secondary" onclick="deletePost(<%= post.id %>, this)">Delete post</button>
+                  <button type="button" class="secondary" onclick="deletePost('<%= post._id %>', this)">Delete post</button>
                 </div>
               </article>
             <% }); %>
@@ -53,7 +53,7 @@
                 required
               ><%= text %></textarea>
               <p class="muted">
-                Posting as @ava. Posts reset when the server restarts.
+                Posting as @ava. Posts are saved in MongoDB.
               </p>
               <button type="submit">Publish post</button>
             </form>
