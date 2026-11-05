@@ -55,13 +55,35 @@
               <p class="muted">
                 Posting as @ava. Posts are saved in MongoDB.
               </p>
-              <button type="submit">Publish post</button>
+              <button type="button" onclick="publishPost(this)">Publish post</button>
             </form>
           </section>
         </aside>
       </div>
     </main>
     <script>
+      async function publishPost(button) {
+        const form = button.form;
+        if (!form.reportValidity()) return;
+
+        // Send the form and receive the updated feed page.
+        const response = await fetch("/posts", {
+          method: "POST",
+          body: new URLSearchParams(new FormData(form)),
+        });
+        const html = await response.text();
+        if (!response.ok) {
+          alert(html);
+          return;
+        }
+
+        // Show the new post without refreshing the page.
+        const page = new DOMParser().parseFromString(html, "text/html");
+        const post = page.querySelector("#posts .post");
+        document.getElementById("posts").prepend(post);
+        form.reset();
+      }
+
       async function deletePost(id, button) {
         try {
           // Ask the server to delete the post.

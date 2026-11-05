@@ -21,24 +21,21 @@ app.get(["/", "/index.html"], async (req, res) => {
   res.render("index", { posts: feed, error: "", text: "" });
 });
 
-// POST /posts: accept the post form and redirect to the feed, or show a validation error.
+// Save a post and return the updated feed page.
 app.post("/posts", async (req, res) => {
   const text = req.body?.text;
   if (typeof text !== "string" || !text.trim() || text.trim().length > 1000) {
-    const feed = await posts.find().sort({ createdAt: -1, _id: -1 }).toArray();
-    return res.status(400).render("index", {
-      posts: feed,
-      error: "Write a post between 1 and 1000 characters.",
-      text: typeof text === "string" ? text : "",
-    });
+    return res.status(400).send("Write a post between 1 and 1000 characters.");
   }
   // Save the post in MongoDB. MongoDB creates its _id automatically.
-  await posts.insertOne({
+  const post = {
     author: "ava",
     text: text.trim(),
     createdAt: new Date().toISOString(),
-  });
-  res.redirect(303, "/");
+  };
+  await posts.insertOne(post);
+  const feed = await posts.find().sort({ createdAt: -1, _id: -1 }).toArray();
+  res.status(201).render("index", { posts: feed, error: "", text: "" });
 });
 
 // Delete a post from MongoDB. The browser updates the page itself.
