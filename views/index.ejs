@@ -79,7 +79,11 @@
 
         // Show the new post without refreshing the page.
         const page = new DOMParser().parseFromString(html, "text/html");
+
+        // Move the new post to the top of the feed.
         const post = page.querySelector("#posts .post");
+        
+        // Add the new post to the top of the feed.
         document.getElementById("posts").prepend(post);
         form.reset();
       }
