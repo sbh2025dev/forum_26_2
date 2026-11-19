@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frame — <%= signup ? "Sign up" : "Log in" %></title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include("nav") %>
+    <main>
+      <section class="panel auth-panel">
+        <h1><%= signup ? "Sign up" : "Log in" %></h1>
+        <% if (error) { %>
+          <p role="alert"><%= error %></p>
+        <% } %>
+        <form action="<%= signup ? '/signup' : '/login' %>" method="post">
+          <label for="username">Username</label>
+          <input id="username" name="username" autocomplete="username" autocapitalize="none"
+            value="<%= username %>" maxlength="30" required />
+          <% if (signup) { %>
+            <small>3 to 30 letters, numbers, or underscores.</small>
+          <% } %>
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" maxlength="128" required
+            autocomplete="<%= signup ? 'new-password' : 'current-password' %>" />
+          <% if (signup) { %>
+            <small>At least 8 characters and at most 72 bytes.</small>
+          <% } %>
+          <p><button type="submit"><%= signup ? "Sign up" : "Log in" %></button></p>
+        </form>
+        <% if (signup) { %>
+          <p>Already have an account? <a href="/login">Log in</a></p>
+        <% } else { %>
+          <p>Need an account? <a href="/signup">Sign up</a></p>
+        <% } %>
+      </section>
+    </main>
+  </body>
+</html>

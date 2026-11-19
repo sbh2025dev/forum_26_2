@@ -7,14 +7,7 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="brand" href="/index.html">frame<span>.</span></a>
-        <nav aria-label="Main navigation">
-          <a href="/index.html">Feed</a><a href="/profile.html">My profile</a>
-        </nav>
-      </div>
-    </header>
+    <%- include("nav") %>
     <main>
       <p class="eyebrow">A place</p>
       <h1>Small moments, shared.</h1>
@@ -33,7 +26,9 @@
                 <% } %>
                 <div class="post-body">
                   <p class="post-caption"><%= post.text %></p>
-                  <button type="button" class="secondary" onclick="deletePost('<%= post._id %>', this)">Delete post</button>
+                  <% if (user && post.authorId?.toString() === user.id) { %>
+                    <button type="button" class="secondary" onclick="deletePost('<%= post._id %>', this)">Delete post</button>
+                  <% } %>
                 </div>
               </article>
             <% }); %>
@@ -43,29 +38,30 @@
           <section class="panel">
             <h2>Your next story</h2>
             <p>A photo, a thought, a little piece of your day.</p>
-            <form id="post-form" action="/posts" method="post">
-              <label for="post-text">Your post</label>
-              <textarea
-                id="post-text"
-                name="text"
-                rows="4"
-                maxlength="1000"
-                required
-              ><%= text %></textarea>
-              <p class="muted">
-                Posting as @ava. Posts are saved in MongoDB.
-              </p>
-              <button type="button" onclick="publishPost(this)">Publish post</button>
-            </form>
+            <% if (user) { %>
+              <form id="post-form" action="/posts" method="post" onsubmit="publishPost(this); return false">
+                <label for="post-text">Your post</label>
+                <textarea
+                  id="post-text"
+                  name="text"
+                  rows="4"
+                  maxlength="1000"
+                  required
+                ><%= text %></textarea>
+                <p class="muted">
+                  Posting as @<%= user.username %>. Posts are saved in MongoDB.
+                </p>
+                <button type="submit">Publish post</button>
+              </form>
+            <% } else { %>
+              <p><a href="/login">Log in</a> or <a href="/signup">sign up</a> to publish a post.</p>
+            <% } %>
           </section>
         </aside>
       </div>
     </main>
     <script>
-      async function publishPost(button) {
-        const form = button.form;
-        if (!form.reportValidity()) return;
-
+      async function publishPost(form) {
         // Send the form and receive the updated feed page.
         const response = await fetch("/posts", {
           method: "POST",

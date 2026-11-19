@@ -1,0 +1,16 @@
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">frame<span>.</span></a>
+    <nav aria-label="Main navigation">
+      <% if (user) { %>
+        <span>@<%= user.username %></span>
+        <form action="/logout" method="post">
+          <button class="secondary" type="submit">Log out</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Log in</a>
+        <a href="/signup">Sign up</a>
+      <% } %>
+    </nav>
+  </div>
+</header>

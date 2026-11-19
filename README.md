@@ -24,8 +24,9 @@ or its imported modules change. Refresh the browser to see updates; EJS template
 and static files are read on requests and do not require a server restart.
 Open http://localhost:8080; VS Code forwards this port from the devcontainer.
 
-Posts are stored in the `posts` collection in the `forum` database. The existing
-`mongo-data` volume keeps them across restarts and container rebuilds. Avoid
+Posts and accounts are stored in the `posts` and `users` collections in the
+`forum` database. The existing `mongo-data` volume keeps them across restarts
+and container rebuilds. Avoid
 `docker compose down -v` unless you intend to delete the database.
 Closing the devcontainer stops the Compose services.
 
@@ -67,6 +68,17 @@ skip Docker. To use another address, set `MONGODB_URI` before starting the app.
 To stop the database services, run `docker compose down` from the same host terminal.
 
 ## Follow the code
+
+Open **Sign up** from the feed to create an account and log in immediately.
+Use **Log out**, then **Log in** to try the same credentials again.
+
+- Sign-up stores a bcrypt password hash in MongoDB. Login checks it with
+  `bcrypt.compare()`.
+- Express stores the signed-in user's ID in an in-memory session and sends the
+  browser a session cookie. Requests use that ID to load the user from MongoDB.
+  Restarting the server signs everyone out.
+- Anyone can read the feed. Signed-in users can publish posts and delete their
+  own. Existing posts without an account ID stay visible.
 
 - `client.connect()` connects before the web server starts.
 - `posts.find().sort(...).toArray()` reads the newest posts first.
