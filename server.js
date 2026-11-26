@@ -31,6 +31,28 @@ if (process.env.NODE_ENV === "production" && !sessionSecret) {
   throw new Error("Set SESSION_SECRET before starting the app in production.");
 }
 
+let databaseReady;
+function initializeDatabase() {
+  databaseReady ??= (async () => {
+    await client.connect();
+    await users.createIndex({ username: 1 }, { unique: true });
+    // MongoDB removes sessions after their stored expiration date.
+    await sessions.createIndex({ expires: 1 }, { expireAfterSeconds: 0 });
+  })().catch((error) => {
+    databaseReady = undefined;
+    throw error;
+  });
+  return databaseReady;
+}
+
+app.use(express.static(path.join(__dirname, "public")));
+
+// Vercel imports the app and initializes MongoDB on the first request.
+app.use(async (req, res, next) => {
+  await initializeDatabase();
+  next();
+});
+
 // The browser keeps a signed session ID. MongoDB keeps the session data.
 app.use(
   session({
@@ -209,14 +231,6 @@ app.post("/posts/:id/delete", requireLogin, async (req, res) => {
   res.status(204).end();
 });
 
-// GET /styles.css: serve the stylesheet.
-app.get("/styles.css", (req, res) => {
-  res.sendFile("styles.css", { root: "." });
-});
-
-// Serve images and other static files under /assets.
-app.use("/assets", express.static("public/assets"));
-
 // Express 5 sends errors from async routes to this handler.
 app.use((error, req, res, next) => {
   console.error(error);
@@ -226,11 +240,7 @@ app.use((error, req, res, next) => {
 // Start accepting requests only after MongoDB connects.
 async function start() {
   try {
-    await client.connect();
-    // Create a unique index on the username field to prevent duplicate usernames.
-    await users.createIndex({ username: 1 }, { unique: true });
-    // MongoDB removes sessions after their stored expiration date.
-    await sessions.createIndex({ expires: 1 }, { expireAfterSeconds: 0 });
+    await initializeDatabase();
     console.log("Connected to MongoDB (forum database)");
     const port = Number(process.env.PORT || 8080);
     const server = app.listen(port, () => {
@@ -249,4 +259,6 @@ async function start() {
   }
 }
 
-start();
+module.exports = app;
+
+if (require.main === module) start();
