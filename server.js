@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const { MongoStore } = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const { randomBytes } = require("node:crypto");
 const path = require("path");
@@ -12,16 +13,6 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Use a session cookie to remember the logged-in user.
-app.use(
-  session({
-    secret: randomBytes(32).toString("hex"),
-    resave: false,
-    saveUninitialized: false,
-    cookie: { sameSite: "lax", httpOnly: true },
-  }),
-);
-
 // Connect to the local MongoDB server and use the forum database.
 const client = new MongoClient(
   process.env.MONGODB_URI || "mongodb://127.0.0.1:27017",
@@ -32,7 +23,30 @@ const client = new MongoClient(
 const forum = client.db("forum");
 const posts = forum.collection("posts");
 const users = forum.collection("users");
+const sessions = forum.collection("sessions");
 const usernamePattern = /^[a-z0-9_]{3,30}$/;
+
+const sessionSecret = process.env.SESSION_SECRET;
+if (process.env.NODE_ENV === "production" && !sessionSecret) {
+  throw new Error("Set SESSION_SECRET before starting the app in production.");
+}
+
+// The browser keeps a signed session ID. MongoDB keeps the session data.
+app.use(
+  session({
+    secret: sessionSecret || randomBytes(32).toString("hex"),
+    store: MongoStore.create({
+      client,
+      dbName: forum.databaseName,
+      collectionName: sessions.collectionName,
+      autoRemove: "disabled",
+      touchAfter: 3600,
+    }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: { sameSite: "lax", httpOnly: true },
+  }),
+);
 
 // Load the current user before routes or EJS templates use it.
 app.use(async (req, res, next) => {
@@ -215,6 +229,8 @@ async function start() {
     await client.connect();
     // Create a unique index on the username field to prevent duplicate usernames.
     await users.createIndex({ username: 1 }, { unique: true });
+    // MongoDB removes sessions after their stored expiration date.
+    await sessions.createIndex({ expires: 1 }, { expireAfterSeconds: 0 });
     console.log("Connected to MongoDB (forum database)");
     const port = Number(process.env.PORT || 8080);
     const server = app.listen(port, () => {

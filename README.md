@@ -74,9 +74,12 @@ Use **Log out**, then **Log in** to try the same credentials again.
 
 - Sign-up stores a bcrypt password hash in MongoDB. Login checks it with
   `bcrypt.compare()`.
-- Express stores the signed-in user's ID in an in-memory session and sends the
-  browser a session cookie. Requests use that ID to load the user from MongoDB.
-  Restarting the server signs everyone out.
+- Express stores the signed-in user's session in the `sessions` collection and
+  sends the browser a signed session cookie. MongoDB removes expired sessions.
+- Set `SESSION_SECRET` to a long, random value and reuse it across restarts and
+  app instances. Production requires this variable. For local development
+  without it, the app generates a new secret at startup, so restarting signs
+  everyone out.
 - Anyone can read the feed. Signed-in users can publish posts and delete their
   own. Existing posts without an account ID stay visible.
 
