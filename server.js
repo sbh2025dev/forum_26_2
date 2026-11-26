@@ -150,45 +150,12 @@ function requireLogin(req, res, next) {
   next();
 }
 
-const feedStreams = new Set();
-
-function notifyFeedChanged() {
-  for (const stream of feedStreams) {
-    stream.write("event: feed-changed\ndata: changed\n\n");
-  }
-}
-
-function readFeed() {
-  return posts.find().sort({ createdAt: -1, _id: -1 }).toArray();
-}
-
 async function renderFeed(res, status = 200) {
-  const feed = await readFeed();
+  const feed = await posts.find().sort({ createdAt: -1, _id: -1 }).toArray();
   res.status(status).render("index", { posts: feed, error: "", text: "" });
 }
 
 app.get(["/", "/index.html"], (req, res) => renderFeed(res));
-
-app.get("/posts", async (req, res) => {
-  res.set("Cache-Control", "no-store");
-  res.render("posts", { posts: await readFeed() });
-});
-
-app.get("/posts/events", (req, res) => {
-  res.set({
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache, no-transform",
-    "X-Accel-Buffering": "no",
-  });
-  res.write(": connected\n\n");
-  feedStreams.add(res);
-
-  const heartbeat = setInterval(() => res.write(": heartbeat\n\n"), 25000);
-  res.on("close", () => {
-    clearInterval(heartbeat);
-    feedStreams.delete(res);
-  });
-});
 
 app.post("/posts", requireLogin, async (req, res) => {
   const input = req.body?.text;
@@ -203,7 +170,6 @@ app.post("/posts", requireLogin, async (req, res) => {
     text,
     createdAt: new Date().toISOString(),
   });
-  notifyFeedChanged();
   await renderFeed(res, 201);
 });
 
@@ -218,7 +184,6 @@ app.post("/posts/:id/delete", requireLogin, async (req, res) => {
   if (result.deletedCount === 0) {
     return res.status(404).send("Post not found.");
   }
-  notifyFeedChanged();
   res.status(204).end();
 });
 
