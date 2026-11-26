@@ -150,12 +150,20 @@ function requireLogin(req, res, next) {
   next();
 }
 
+function readFeed() {
+  return posts.find().sort({ createdAt: -1, _id: -1 }).toArray();
+}
+
 async function renderFeed(res, status = 200) {
-  const feed = await posts.find().sort({ createdAt: -1, _id: -1 }).toArray();
-  res.status(status).render("index", { posts: feed, error: "", text: "" });
+  res.status(status).render("index", { posts: await readFeed(), error: "", text: "" });
 }
 
 app.get(["/", "/index.html"], (req, res) => renderFeed(res));
+
+app.get("/posts", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.render("posts", { posts: await readFeed() });
+});
 
 app.post("/posts", requireLogin, async (req, res) => {
   const input = req.body?.text;

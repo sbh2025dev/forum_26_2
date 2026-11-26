@@ -1,0 +1,17 @@
+<% posts.forEach((post) => { %>
+  <article class="post">
+    <header class="post-header">
+      <strong>@<%= post.author %></strong>
+      <time datetime="<%= post.createdAt %>"><%= new Date(post.createdAt).toLocaleDateString() %></time>
+    </header>
+    <% if (post.image) { %>
+      <img class="post-image" src="<%= post.image %>" alt="<%= post.imageAlt %>" />
+    <% } %>
+    <div class="post-body">
+      <p class="post-caption"><%= post.text %></p>
+      <% if (user && post.authorId?.toString() === user.id) { %>
+        <button type="button" class="secondary" onclick="deletePost('<%= post._id %>')">Delete post</button>
+      <% } %>
+    </div>
+  </article>
+<% }); %>
